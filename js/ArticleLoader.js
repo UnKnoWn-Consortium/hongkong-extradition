@@ -1,15 +1,16 @@
 "use strict";
 
 class ArticleLoader {
-  constructor () {
+  constructor (url) {
     this.articles = [];
     this.currentIndex = 0;
+    this.url = url;
   }
 
   initialize () {
     return new Promise(
       (resolve, reject) => {
-        fetch("https://www.collaction.hk/api/extradition_objective?token=mzFly3aDBwWQpnJaHol60A2I9lYccTLy92lyN3QorQbfgLkO5ifxauPOuBF1")
+        fetch(this.url)
         //fetch("https://assets.collaction.hk/extradition_objective_list.json")
           .then(
             res => {
@@ -30,10 +31,10 @@ class ArticleLoader {
   }
 
   get (length = 10) {
-    return this._getArticles(this.currentIndex, this.currentIndex += length);
+    return this._getArticleElements(this.currentIndex, this.currentIndex += length);
   }
 
-  _getArticles (start, end) {
+  _getArticleElements (start, end) {
     return this._compileArticles(start, end);
   }
 

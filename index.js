@@ -1,36 +1,38 @@
 "use strict";
 
-const loader = new ArticleLoader();
+const localNewsLoader = new ArticleLoader("https://www.collaction.hk/api/extradition_objective?token=mzFly3aDBwWQpnJaHol60A2I9lYccTLy92lyN3QorQbfgLkO5ifxauPOuBF1");
+const foreignNewsLoader = new ArticleLoader();
 
 window.addEventListener(
   "load",
   () => {
-    loader.initialize().then(
-      () => {
-        let innerHTML = loader.get(10)
-          .reduce(
-            (acc, val, idx, arr) => {
-              acc += val;
-              if (idx + 1 < arr.length) {
-                acc += `<hr class="bg-white">`;
-              }
-              return acc;
-            },
-            ""
-          );
-        /* if (loader.articles.length > 10) {
-          innerHTML += `<div class="text-center">
-                          <button id="load-more" class="btn btn-sm btn-light">
-                            Load More
-                          </button>
-                        </div>`;
-        } */
-        document.getElementById("articles").innerHTML = innerHTML;
-      },
-      () => {
-        document.getElementById("articles").innerHTML = ``;
-      }
-    );
+    localNewsLoader
+      .initialize()
+      .then(
+        () => {
+          let innerHTML = localNewsLoader.get(10)
+            .reduce(
+              (acc, val, idx, arr) => {
+                acc += val;
+                if (idx + 1 < arr.length) {
+                  acc += `<hr class="bg-white">`;
+                }
+                return acc;
+              },
+              ""
+            );
+          document.getElementById("articles").innerHTML = innerHTML;
+          if (
+            localNewsLoader.articles.length <= 10 ||
+            localNewsLoader.currentIndex >= localNewsLoader.articles.length - 1
+          ) {
+            document.getElementById("load-more").classList.add("d-none");
+          }
+        },
+        () => {
+          document.getElementById("articles").innerHTML = ``;
+        }
+      );
   }
 );
 
@@ -40,7 +42,7 @@ document
     "click",
     (evt) => {
       if (evt.target.id === "load-more") {
-        let addition = loader
+        let addition = localNewsLoader
           .get(10)
           .reduce(
             (acc, val, idx, arr) => {
